@@ -12,12 +12,6 @@ contract OrderSwap is ReentrancyGuard{
      address tokenB_contractAddress; // deposit tokens B
      address tokenZ_contractAddress; // withdraw token Z
 
-     uint256 constant factorA = (1 * 10**2);
-     uint256 constant factorB = factorA / (10);
-     uint256 constant factorZ = factorB / (10);
-
-     error InsufficientBalance();
-
      mapping(address tokenA_contractAddress => uint256) balancesTokenA;
      mapping(address tokenB_contractAddress => uint256) balancesTokenB;
      mapping(address tokenZ_contractAddress => uint256) balancesTokenZ;
