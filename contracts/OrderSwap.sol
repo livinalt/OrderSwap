@@ -6,17 +6,7 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
 
 contract OrderSwap is ReentrancyGuard{
-    /* 
-    
-    i want uses to deposit tokena, b, c and d
-    I want users to be able to withraw these tokens in token z */
 
-    /* 
-    Create an order-based swap contract that allows users to deposit various kinds of tokens. 
-    These tokens can be purchased by others with another token specified by the depositors. 
-
-For example; Ada deposits 100 GUZ tokens; she wants in return, 20 W3B tokens for the 100 GUZ tokens.
-     */
      address owner;
      address tokenA_contractAddress; // deposit tokens A
      address tokenB_contractAddress; // deposit tokens B
@@ -43,23 +33,33 @@ For example; Ada deposits 100 GUZ tokens; she wants in return, 20 W3B tokens for
 
      function deposit(uint256 _amount, address _contractAddress) external {
 
+        require(_contractAddress != address(0),"Address Zero detected");
+        require(msg.sender != address(0),"Address Zero detected");
+        require(_amount > 0, "Amount must be greater than zero");
+
         if(_contractAddress == tokenA_contractAddress){
-            require((IERC20(tokenA_contractAddress).balanceOf(msg.sender) > _amount), "Insufficient Balance");
+            require((IERC20(tokenA_contractAddress).balanceOf(msg.sender) >= _amount), "Insufficient Balance");
             balancesTokenA[msg.sender] += _amount;
         }
         if(_contractAddress == tokenB_contractAddress){
-            require((IERC20(tokenB_contractAddress).balanceOf(msg.sender) > _amount), "Insufficient Balance");
+            require((IERC20(tokenB_contractAddress).balanceOf(msg.sender) >= _amount), "Insufficient Balance");
             balancesTokenB[msg.sender] += _amount;
         }
 
         if(_contractAddress == tokenZ_contractAddress){
-            require((IERC20(tokenZ_contractAddress).balanceOf(msg.sender) > _amount), "Insufficient Balance");
+            require((IERC20(tokenZ_contractAddress).balanceOf(msg.sender) >= _amount), "Insufficient Balance");
             balancesTokenZ[msg.sender] += _amount;
         }
         
      }
 
      function swapToken(address from, address to, uint256 amount) external{
+
+        require(from != address(0),"Address Zero detected");
+        require(to != address(0),"Address Zero detected");
+        require(msg.sender != address(0),"Address Zero detected");
+        require(amount > 0, "Amount must be greater than zero");
+
          if(from == tokenA_contractAddress && to == tokenB_contractAddress){
             require((IERC20(tokenA_contractAddress).balanceOf(msg.sender) > amount), "Insufficient Balance");
            
@@ -116,13 +116,17 @@ For example; Ada deposits 100 GUZ tokens; she wants in return, 20 W3B tokens for
 
             uint256 swappedAmount = amount / ((1 * 10**2) / 100);
             balancesTokenB[msg.sender] += swappedAmount;
-        }
-       
+        }       
 
      }
 
+
      function withdraw(address from, uint256 amount) external{
         
+        require(from != address(0),"Address Zero detected");
+        require(msg.sender != address(0),"Address Zero detected");
+        require(amount > 0, "Amount must be greater than zero");
+
         if(from == tokenA_contractAddress){
             require((balancesTokenA[msg.sender] >= amount), "Insufficient Balance");
            
@@ -147,6 +151,9 @@ For example; Ada deposits 100 GUZ tokens; she wants in return, 20 W3B tokens for
      }
 
      function getBalanceTokenA(address token) external view returns(uint256){
+
+        require(token != address(0),"Address Zero detected");
+        require(msg.sender != address(0),"Address Zero detected");
 
         if(token == tokenA_contractAddress){
             return balancesTokenA[msg.sender];
